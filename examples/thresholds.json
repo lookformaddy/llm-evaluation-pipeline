@@ -1,0 +1,1 @@
+{"default_max_drop":0.05,"max_drop":{"groundedness":0.03},"max_latency_p95_ms":1500.0,"max_total_cost_usd":0.05,"min_scores":{"groundedness":0.8,"regex_match":0.9,"semantic_similarity":0.6}}
