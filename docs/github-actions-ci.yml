@@ -1,0 +1,66 @@
+# Sample GitHub Actions workflow for the LLM Evaluation Pipeline.
+#
+# This file lives under docs/ as a reference. To activate it, copy it to
+# .github/workflows/llm-eval.yml in your repository.
+#
+# What it does on every pull request:
+#   1. Installs the package and runs the unit test suite.
+#   2. Runs the evaluation for the PR's SUT configuration and gates it
+#      against the baseline report stored as a workflow artifact of the
+#      base branch (download step sketched — wire it to your artifact
+#      or storage of choice).
+#   3. Uploads the JSON/Markdown/HTML reports as artifacts and posts the
+#      gate summary to the job summary page.
+# The job fails when the regression gate fails (exit code 1 from the CLI).
+
+name: llm-eval
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test-and-evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -e ".[api,dev]"
+
+      - name: Unit tests
+        run: pytest
+
+      - name: Validate golden dataset
+        run: llm-eval validate-dataset data/golden/support_qa_v1.jsonl
+
+      - name: Produce baseline report (base configuration)
+        run: >
+          llm-eval run
+          --config examples/sut_config_baseline.json
+          --out out/baseline
+
+      - name: Evaluate candidate and gate against baseline
+        run: >
+          llm-eval run
+          --config examples/sut_config_baseline.json
+          --out out/candidate
+          --baseline out/baseline/report.json
+          --thresholds examples/thresholds.json
+          --history out/history.json
+
+      - name: Publish gate summary
+        if: always()
+        run: cat out/candidate/report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload evaluation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: llm-eval-reports
+          path: out/
