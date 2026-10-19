@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Evaluation outputs
+out/
+demo-out/
+history.json
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
