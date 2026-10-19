@@ -1,0 +1,10 @@
+# Runtime
+pydantic>=2.5
+
+# Optional API surface (equivalent to the [api] extra)
+fastapi>=0.110
+uvicorn>=0.29
+
+# Development / tests (equivalent to the [dev] extra)
+pytest>=8.0
+httpx>=0.27
