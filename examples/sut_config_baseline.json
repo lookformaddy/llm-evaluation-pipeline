@@ -1,0 +1,1 @@
+{"base_latency_ms":120.0,"input_cost_per_1k_tokens":0.003,"latency_ms_per_output_token":4.0,"model":"offline-kb-assistant","name":"baseline","options":{"max_facts":3},"output_cost_per_1k_tokens":0.015,"temperature":0.0}
